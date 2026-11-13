@@ -240,7 +240,7 @@ addLayer("E", {
                 return "Passively generate energy at a rate based on energy (capped at "+tmp.E.generate.times(100)+"%)"
             },
             cost: new Decimal(1),
-            unlocked() {return (hasUpgrade("E", 12) && hasUpgrade("E", 13) && hasUpgrade("E", 14) && hasUpgrade("E", 15) && hasUpgrade("E", 16) && hasUpgrade("E", 21)) || (player.E.upgrades.length > 2 && hasAchievement("Ach", 72))},
+            unlocked() {return (hasUpgrade("E", 12) && hasUpgrade("E", 13) && hasUpgrade("E", 14) && hasUpgrade("E", 15) && hasUpgrade("E", 16)) || (player.E.upgrades.length > 2 && hasAchievement("Ach", 72))},
         },
         22: {
             title: "Energy powered automation",
