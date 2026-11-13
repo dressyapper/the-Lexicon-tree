@@ -1,7 +1,8 @@
 // ************ Themes ************
-var themes =  ["default"]
+var themes =  ["default", "goodluck"]
 
 var colors = {
+	//Normal
 	default: {
 		1: "#ffffff",//Branch color 1
 		2: "#bfbfbf",//Branch color 2
@@ -12,6 +13,20 @@ var colors = {
 		background: "#0f0f0f",
 		background_tooltip: "rgba(0, 0, 0, 0.75)",
 	},
+
+	//secret
+	goodluck: {
+		1: "#ffffff",//Branch color 1
+		2: "#bfbfbf",//Branch color 2
+		3: "#7f7f7f",//Branch color 3
+		color: "#dfdfdf",
+		points: "#ffffff",
+		locked: "#bf8f8f",
+		background: "#0f0f0f",
+		background_tooltip: "rgba(0, 0, 0, 0.75)",
+	},
+
+	//layers
 	Alphabet: {
 		1: "rgb(255, 255, 255)",
 		2: "rgb(255, 255, 255)",
@@ -72,15 +87,25 @@ var colors = {
 		background: "rgb(0, 218, 214)",
 		background_tooltip: " rgba(0, 0, 0, 0.5)",
 	},
+	Galaxy: {
+		1: "rgb(255, 255, 0)",
+		2: "rgb(217, 255, 0)",
+		3: "rgb(159, 238, 0)",
+		color: "rgb(127, 115, 255)",
+		points: "rgb(135, 0, 253)",
+		locked: "rgb(41, 36, 0)",
+		background: "rgb(0, 0, 0)",
+		background_tooltip: " rgba(0, 0, 75, 0.75)",
+	},
 }
 function changeTheme() {
-
 	colors_theme = colors[options.theme || "default"];
 	document.body.style.setProperty('--background', colors_theme["background"]);
 	document.body.style.setProperty('--background_tooltip', colors_theme["background_tooltip"]);
 	document.body.style.setProperty('--color', colors_theme["color"]);
 	document.body.style.setProperty('--points', colors_theme["points"]);
 	document.body.style.setProperty("--locked", colors_theme["locked"]);
+	specialThemeFX()
 }
 function getThemeName() {
 	return options.theme? options.theme : "default";
@@ -104,5 +129,30 @@ function switchTheme() {
 function addTheme(theme) {
 	if (!themes.includes(theme)) {
 		themes.push(theme)
+	}
+}
+
+function specialThemeFX() {
+	if (options.theme == "Alphabet") {
+		let loop = setInterval(() => {
+
+			if (options.theme != "Alphabet") {
+				clearInterval(loop)
+			}
+			else {
+				if (player.currentTab != "none") {
+					document.body.style.setProperty('--background', colorSubtract(tmp[player.currentTab].color, "rgb(75,75,)"));
+				}
+				else {
+					document.body.style.setProperty('--background', "black");
+				}
+			}
+
+
+		})
+		
+	}
+	else if (options.theme == "goodluck") {
+		
 	}
 }

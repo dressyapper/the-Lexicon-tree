@@ -20,6 +20,10 @@ addLayer("F", {
         Cconverter: "C",
         CconvertPercent: new Decimal(0.5),
 
+        unlockedEF: false,
+        fakefactories: new Decimal(0),
+        fakefactoriesconversion: new Decimal(0.1),
+
     }},
     color: "rgb(0, 0, 255)",
     milestonePopups: true,
@@ -31,17 +35,22 @@ addLayer("F", {
         }
         else {
             if (hasUpgrade("F", 31)) {
-                if (hasUpgrade("F", 31) && player.E.points.gt(1)) {
-                    player.F.product = p
+                if ((player.E.points.gt(1) || hasUpgrade("F", 53))) {
+                    if (!hasUpgrade("F", 53)) {
+                        player.F.product = p
 
-                    let e = (player.E.points.pow(0.1).div(100).add(1))
+                        let e = (player.E.points.pow(0.1).div(100).add(1))
 
-                    if (layerF.isTrading("FactoryProducers")) e = e.pow(3)
-                    if (hasUpgrade("F", 41)) e = e.pow(0.3)
-                    player.E.points = player.E.points.div(e).sub(1)
+                        if (layerF.isTrading("FactoryProducers")) e = e.pow(3)
+                        if (hasUpgrade("F", 41)) e = e.pow(0.3)
+                        player.E.points = player.E.points.div(e).sub(1)
+                    }
+                    else {
+                        player.F.product = p
+                    }
                 }
                 else {
-    
+
                 }
             }
             else {
@@ -66,9 +75,16 @@ addLayer("F", {
             }
         }
 
+        if (hasUpgrade("F", 66)) {
+            player.F.fakefactories = player.F.points.add(getBuyableAmount("F",11).times(player.F.fakefactoriesconversion))
+        }
+        else {
+            player.F.fakefactories = player.F.points
+        }
+
     },
     energydrink() {
-        if (player.F.energydrink.gt(0) && ((player.F.enabledrobots && hasUpgrade("F", 31))||!hasUpgrade("F",31))) {
+        if (player.F.energydrink.gt(0) && ((player.F.enabledrobots && hasUpgrade("F", 31))||!hasUpgrade("F",31)) && (player.E.points.gte(0) && !hasUpgrade("F", 31) || hasUpgrade("F",53))) {
             if (new Decimal(Math.random()).times(100000).times(player.F.upgrades.length) > new Decimal(99999).div(player.F.energydrink.add(1).log(100).add(1)).div(new Decimal(1+hasUpgrade("F",16)).min(1.25))) {
                 player.F.energydrink = player.F.energydrink.sub(1)
             }
@@ -83,8 +99,17 @@ addLayer("F", {
         else {rate = rate.div(player.F.energydrink.add(1).log(10).add(1))}
         if (layerF.isTrading("FactoryProducers")) {rate = rate.div(125)}
         if (hasUpgrade("F", 41)) {rate = rate.div(1.2)}
+        if (hasUpgrade("F", 62)) {rate = rate.div(new Decimal(challengeCompletions("E", 11)).add(1))}
+        if (hasUpgrade("F", 65)) {rate = rate.div(5)}
 
         player.F.rate = rate
+    },
+    trading() {
+        let c = 1
+        
+        if (hasUpgrade("F", 63)) {c = c + 1}
+
+        player.F.maxCompanies = c
     },
     productgeneration() {
         let gen = new Decimal(0)
@@ -99,7 +124,7 @@ addLayer("F", {
         if (hasUpgrade("F", 31) && !player.E.points.eq(0)) {gen = gen.times(player.E.points.log(10).add(1))}
         if (hasUpgrade("F", 33)) {gen = gen.times(7)}
         if (hasUpgrade("F", 35)) {gen = gen.times(upgradeEffect("F", 35))}
-        if (layerF.isTrading("Factorial")) {gen = gen.add(layerF.effect("Factorial"))}
+        if (layerF.isTrading("Factorial")) {gen = gen.times(layerF.effect("Factorial"))}
         if (layerF.isTrading("FactoryProducers")) {gen = gen.times(10)}
         if (hasUpgrade("F", 42)) {gen = gen.times(player.F.energydrink.pow(0.1).add(1))}
         if (hasUpgrade("F", 43)) {gen = gen.times(upgradeEffect("F", 43))}
@@ -107,10 +132,12 @@ addLayer("F", {
         if (hasUpgrade("F", 45)) {gen = gen.times(upgradeEffect("F", 45))}
         if (hasUpgrade("F", 51)) {gen = gen.pow(1.2)}
         if (hasUpgrade("F", 52)) {gen = gen.times(10)}
+        if (hasUpgrade("F", 62)) {gen = gen.times(upgradeEffect("F", 62))}
+        if (hasUpgrade("F", 65)) {gen = gen.times(5)}
 
+        gen = gen.times(player.F.points.add(1))
 
-
-        gen = gen.times(player.F.points.max(1))
+        gen = gen.times(player.F.fakefactories.max(1))
 
         player.F.generation = gen
     },
@@ -127,21 +154,35 @@ addLayer("F", {
         if (player.F.total.eq(0)) {
             req = new Decimal(0)
         }
+
+
+
+        if (hasUpgrade("F", 54)) {
+            req = req.div(upgradeEffect("F", 54))
+        }
         return req
     },
     canReset() {
         try {
-            return player.E.points.gte(tmp.F.nextAt)
+            return player.E.points.gte(tmp.F.nextAt) && (hasUpgrade("E", 36) || player.F.total.gte(1))
         }
         catch {
             return false
         }
     },
     onPrestige() {
+        let upg = player.F.upgrades
         player.F.upgrades = []
         player.F.energydrink = new Decimal(0)
         player.F.product = new Decimal(0)
         player.F.enabledrobots = true
+
+        let factoryupg = [51,52,53,54]
+        for (i in factoryupg) {
+            if (upg.includes(factoryupg[i])) {
+                player.F.upgrades.push(factoryupg[i])
+            }
+        }
         
     },
     resource: "F", // Name of prestige currency
@@ -161,9 +202,12 @@ addLayer("F", {
     doReset(reset) {
         if (layers[reset].row <= this.row) return 
 
-        let keep = []
+        let keep = ["productname"]
+        let upg = player.F.upgrades
 
         layerDataReset(this.layer, keep)
+
+        
     },
     /*prestigeButtonText() {
         try {
@@ -225,7 +269,7 @@ addLayer("F", {
             currencyLayer: "F",
             currencyInternalName: "product",
             currencyDisplayName() {return player.F.productname},
-            unlocked() {return true},
+            unlocked() {return player.F.points.gte(1) || hasUpgrade("F", 11) || player.F.upgrades.length > 0},
         },
         12: {
             title: "Advertisement",
@@ -374,7 +418,7 @@ addLayer("F", {
         31: {
             title: "AI",
             description: "Lets just replace everyone with robots. Robots work 4x faster and more based on energy but they also take energy. Oh and energy drinks are replaced with superchargers branded as energy drinks.",
-            cost: new Decimal(100000),
+            cost: new Decimal(50000),
 
 
             currencyLayer: "F",
@@ -563,21 +607,173 @@ addLayer("F", {
             title: "Worldwide",
             description: "^1.2 Product gain",
             cost: new Decimal(1),
+            unlocked() {return hasAchievement("Ach", 66)}
         },
         52: {
             title: "Fold Ten",
             description: "10x A-E and product gain",
             cost: new Decimal(2),
+            unlocked() {return hasAchievement("Ach", 66)}
         },
-        
-        
-        
+        53: {
+            title: "Perpetual robots",
+            description: 'Robots make their own energy and no longer take energy',
+            cost: new Decimal(1),
+            unlocked() {return hasAchievement("Ach", 66)}
+        },
+        54: {
+            title: "Factory after Factory after",
+            description: 'Each energy factory makes normal factories 25x cheaper compounding, capped at 1e1000',
+            cost: new Decimal(1),
+            effect() {
+                return getBuyableAmount("F", 11).pow(25).min("1e1000")
+            },
+            effectDisplay() {
+                if (this.effect().gte("1e1000")) {
+                    return format(upgradeEffect(this.layer, this.id))+"x (CAPPED)"
+                }
+                else {
+                    return format(upgradeEffect(this.layer, this.id))+"x"
+                }
+            },
+            unlocked() {return hasUpgrade("F", 51) && hasUpgrade("F", 52) && hasUpgrade("F", 53) && hasUpgrade("F", 66) || hasUpgrade("F", 54)}
+        },
+
+
+
+        61: {
+            title: "Energy Factories",
+            description: 'With enough product, you can buy an energy facility which increases energy gain even more.',
+            cost: new Decimal(0),
+            onPurchase() {
+                player.F.unlockedEF = true
+            },
+
+
+            currencyLayer: "F",
+            currencyInternalName: "product",
+            currencyDisplayName() {return player.F.productname},
+            unlocked() {return hasUpgrade("F",46) && player.F.total.gte(2)},
+        },
+        62: {
+            title: "Supercharger",
+            description: 'Energy boosts product gain even more along with energy charge dividing rate',
+            cost: new Decimal(1e23),
+            effect() {
+                return player.E.points.pow(0.1).add(1)
+            },
+            effectDisplay() {
+                if (this.effect().gte(1e10)) {
+                    return format(upgradeEffect(this.layer, this.id))+"x (CAPPED)"
+                }
+                else {
+                    return format(upgradeEffect(this.layer, this.id))+"x"
+                }
+            },
+
+
+            currencyLayer: "F",
+            currencyInternalName: "product",
+            currencyDisplayName() {return player.F.productname},
+            unlocked() {return hasUpgrade("F",61)},
+        },
+        63: {
+            title: "Good reputation",
+            description: 'Your reputation with other companies allows you to trade with 2 companies simultaneously',
+            cost: new Decimal(1e25),
+
+
+            currencyLayer: "F",
+            currencyInternalName: "product",
+            currencyDisplayName() {return player.F.productname},
+            unlocked() {return hasUpgrade("F",62) && player.F.total.gte(2)},
+        },
+        64: {
+            title: "Better Energy Factories",
+            description: 'Energy Factories are 10x better and cost base is 10x less',
+            cost: new Decimal(1e28),
+
+
+            currencyLayer: "F",
+            currencyInternalName: "product",
+            currencyDisplayName() {return player.F.productname},
+            unlocked() {return hasUpgrade("F",63) && player.F.total.gte(2)},
+        },
+        65: {
+            title: "Five",
+            description: '5x product and prodction rate because our empire is so cool',
+            cost: new Decimal(3e28),
+
+
+            currencyLayer: "F",
+            currencyInternalName: "product",
+            currencyDisplayName() {return player.F.productname},
+            unlocked() {return hasUpgrade("F",64) && player.F.total.gte(2)},
+        },
+        66: {
+            title: "Fake Factories",
+            description: 'Energy factories act as a tenth of a normal factory. This doesnt take place where factories are a currency/requirement or upgrades that take factories. You can also buy 5 more energy factories.',
+            cost: new Decimal(2.5e29),
+
+
+            currencyLayer: "F",
+            currencyInternalName: "product",
+            currencyDisplayName() {return player.F.productname},
+            unlocked() {return hasUpgrade("F",65) && player.F.total.gte(2)},
+        }
     },
     milestones: {
        
     },
     buyables: {
-       
+        11: {
+            title: "Factory of Energy",
+            description() {
+                if (hasUpgrade("F", 64)) {
+                    return "Using product, you can buy energy factories. These boost energy reset along with increasing the generation cap by +1250% for each factory. These are kept on factory reset"
+                }
+                else {
+                    return "Using product, you can buy energy factories. These boost energy reset along with increasing the generation cap by +125% for each factory. These are kept on factory reset"
+                }
+            },
+            purchaseLimit() {
+                let limit = new Decimal(30)
+
+                if (hasUpgrade("F",66)) {limit = limit.add(5)}
+
+                return limit.floor()
+            },
+            unlocked() {return hasUpgrade("F", 61) || player.F.unlockedEF},
+            cost(x) {
+                if (hasUpgrade("F", 64)) {
+                    return new Decimal(1e1).pow(x)
+                }
+                else {
+                    return new Decimal(1e2).pow(x)
+                }
+            },
+            display() {
+                if (this.purchaseLimit()) {
+                    return ""+this.description()+"<br>Cost: " + format(this.cost()) + " "+player.F.productname + "<br>Bought: " + getBuyableAmount(this.layer, this.id) + "/"+format(this.purchaseLimit())
+                }
+                else {
+                    return ""+this.description()+"<br>Cost: " + format(this.cost()) + " "+player.F.productname + "<br>Bought: " + getBuyableAmount(this.layer, this.id)
+                }
+            },
+            canAfford() {
+                return player[this.layer].product.gte(this.cost())
+            },
+            buy() {
+                if (player[this.layer].points.sign == -1) return
+                player[this.layer].product = player[this.layer].product.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            effect(x) {
+                let eff = new Decimal(10).pow(x).add(1)
+
+                return eff
+            },
+        },
     },
     clickables: {
         11: {
@@ -598,7 +794,21 @@ addLayer("F", {
                 }
             },
             display() {
-                return "Costs "+this.cost()+" Product<br><b>You have "+player.F.energydrink+" Energy Drinks"
+                if (false) {
+                    return "Costs "+this.cost()+" Product (hold to buy max)<br><b>You have "+player.F.energydrink+" Energy Drinks"
+                }
+                else {
+                    return "Costs "+this.cost()+" Product<br><b>You have "+player.F.energydrink+" Energy Drinks"
+                }
+            },
+            onHold() {
+                if (false) {
+                    if (player.F.product.gte(this.cost())) {
+                        player.F.energydrink = player.F.energydrink.add(player.F.product.div(this.cost()).floor())
+                        player.F.product = player.F.product.sub(this.cost().times(player.F.product.div(this.cost()).floor()))
+                    }
+
+                }
             },
             unlocked() {
                 return hasUpgrade("F", 15)
@@ -819,11 +1029,6 @@ addLayer("F", {
                 ["display-text", function() {
                     return "You are generating "+format(player.F.generation)+" "+player.F.productname+" every ~"+format(player.F.rate)+"ms"
                 }],
-                ["display-text", function() {
-                    if (player.F.currentTrading.length > 1) {
-                        return "But are losing "+format(player.F.generation)+" "+player.F.productname+" every ~"+format(player.F.rate)+"ms"
-                    }}
-                ],
                 "blank",
                 ["display-text", function() {
                     return "You have "+format(player.F.energydrink)+" Energy Drinks"
@@ -831,7 +1036,8 @@ addLayer("F", {
                 "blank",
                 ["clickables",[1]],
                 "blank",
-                ["upgrades",[1,2,3,4]],
+                ["upgrades",[1,2,3,4,6]],
+                "buyables",
 
             ],
     
@@ -877,17 +1083,13 @@ addLayer("F", {
                 ["display-text", function() {
                     return "You are generating "+format(player.F.generation)+" "+player.F.productname+" every ~"+format(player.F.rate)+"ms"
                 }],
-                ["display-text", function() {
-                    if (player.F.currentTrading.length > 1) {
-                        return "But are losing "+format(player.F.generation)+" "+player.F.productname+" every ~"+format(player.F.rate)+"ms"
-                    }}
-                ],
                 "blank",
                 ["display-text", function() {
                     return "You have "+format(player.F.energydrink)+" Energy Drinks"
                 }],
                 "blank",
-                ["upgrades",[5]]
+                ["upgrades",[5]],
+                "buyables",
                 
 
             ],
@@ -983,19 +1185,24 @@ let layerF = {
         DiverseCorporation: {
             pay: new Decimal(2.5e12),
             effect() {
-                return player.A.points.add(1).times(player["&"].points.add(1)).times(player.B.points.add(1)).times(player.C.points.add(1)).times(player.D.points).times(player.E.points.add(1)).times(player.F.points.add(1)).times(player.F.product.add(1)).add(1).log(10).div(3).max(1)
+                return player.A.points.add(1).times(player["&"].points.add(1)).times(player.B.points.add(1)).times(player.C.points.add(1)).times(player.D.points).times(player.E.points.add(1)).times(player.F.fakefactories.add(1)).times(player.F.product.add(1)).add(1).log(10).div(3).max(1)
             },
             description() {
                 return "DiverseCorporation gives you their Diversity Machine which uses a diverse range of currencies to boost D by "+format(this.effect())+"x for only <b>2.5e12 product</b> a second"
             }
         },
         Factorial: {
-            pay: new Decimal(5e55),
+            pay: new Decimal(1e25),
             effect() {
-                return player.F.points.factorial()
+                if (player.F.fakefactories.gte(10)) {
+                    return new Decimal(10).factorial().add(1).add(new Decimal(player.F.fakefactories).sub(9).factorial().pow(0.1))
+                }
+                else {
+                    return player.F.fakefactories.add(1).factorial()
+                }
             },
             description() {
-                return "Factorial offers you to be put under their company for only <b>5e55 product</b>. Doing so lets them take advantage of your factories to boost them and you. The factorial of your factories is added on to product gain (eventually capped). Currently: +"+format(this.effect())
+                return "Factorial offers you to be put under their company for only <b>1e25 product</b>. Doing so lets them take advantage of your factories to boost them and you. The factorial of your factories boosts product gain (until 10). Currently: "+format(this.effect())+"x"
             }
         },
         FactoryProducers: {

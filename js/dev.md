@@ -647,3 +647,9 @@ if (hasAchievement("Ach", 15)) gain = gain.times(achievementEffect("Ach", 15))
 	if (hasMilestone("B", 1)) gain = gain.times(2)
 	if (hasMilestone("B", 2)) gain = gain.times(10)
 	if (hasMilestone("B", 3)) gain = gain.times(25)
+
+
+
+["display-text", function() { 
+                    return 'Your charged ^ boosts ^ by <h2 style="color: ' + tmp[this.layer].color + +'; text-shadow: 0px 0px 10px ' + tmp[this.layer].color + '; display: inline;"> ^' + format(player["^"].chargedpoints.add(1).log(1e3).add(1).tetrate(new Decimal(hasMilestone("^", 6)+0).times(3).max(1)), 3) +'</h2>';
+                }],

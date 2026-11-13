@@ -17,7 +17,7 @@ addLayer("A", {
         return req
     },
     autoUpgrade() {
-        return hasUpgrade("&", 11) && !inChallenge("C", 14)
+        return hasUpgrade("&", 11) && !inChallenge("C", 14) && !inChallenge("G", 13)
     },
     ampersandformula() {
         let x = tmp[this.layer].resetGain
@@ -32,6 +32,7 @@ addLayer("A", {
         if (hasUpgrade("D", 52)) {d = d.div(100)}
         if (hasUpgrade("E", 22)) {d = d.div(1e50)}
         if (hasUpgrade("E", 33)) {d = d.div(1e95)}
+        d = d.div(player.G.generators['&'].effect(player.G.generators["&"].level))
         try {
             return x.div(d).add(new Decimal(hasAchievement("Ach", 33)+0))
         }
@@ -47,7 +48,6 @@ addLayer("A", {
         let exp = new Decimal(0.5)
 
         if (hasUpgrade("A", 41)) {exp = exp.times(1.1)}
-
         return exp
     }, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -85,6 +85,8 @@ addLayer("A", {
         if (hasUpgrade("F", 35)) mult = mult.times(upgradeEffect("F", 35))
         if (layerF.isTrading("Aproductions")) mult = mult.times(layerF.effect("Aproductions"))
         if (hasUpgrade("F", 52)) mult = mult.times(10)
+        mult = mult.times(player.G.generators.a.effect(player.G.generators.a.level).max(1))
+        if (inChallenge("G", 14)) mult = mult.pow(0.1)
 
         
         return mult
@@ -101,8 +103,6 @@ addLayer("A", {
         let ampersandboosterbuyable = player.A.buyables[11]
 
         layerDataReset(this.layer, keep)
-
-        console.log(player.A.buyables[11], ampersandboosterbuyable)
 
         if (hasUpgrade("&",81)) player.A.buyables[11] = ampersandboosterbuyable
     },
@@ -185,6 +185,7 @@ addLayer("A", {
             unlocked() {return hasUpgrade("A", 12)},
             effectCap() {
                 let cap = new Decimal(10)
+                if (inChallenge("G", 13)) cap = cap.pow(2)
                 return cap
             },
             effect() {
@@ -213,6 +214,7 @@ addLayer("A", {
             unlocked() {return hasUpgrade("A", 13)},
             effectCap() {
                 let cap = new Decimal(100)
+                if (inChallenge("G", 13)) cap = cap.pow(2)
 
 
                 return cap
@@ -249,6 +251,8 @@ addLayer("A", {
             unlocked() {return hasUpgrade("A", 15)},
             effectCap() {
                 let cap = new Decimal(10)
+
+                if (inChallenge("G", 13)) cap = cap.pow(2)
 
 
                 return cap

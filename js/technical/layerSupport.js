@@ -234,6 +234,8 @@ function addLayer(layerName, layerData, tabLayers = null){ // Call this to add l
         }
         layers[layerName].tabFormat = format
     }
+
+
 }
 
 function addNode(layerName, layerData){ // Does the same thing, but for non-layer nodes

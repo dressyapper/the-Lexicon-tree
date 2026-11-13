@@ -10,7 +10,7 @@ addLayer("^", {
 
 		points: new Decimal(0),
         earn: new Decimal(1),
-        clicks: new Decimal(1),
+        clicks: new Decimal(0),
 
         trueclicks: new Decimal(0),
 
@@ -20,18 +20,20 @@ addLayer("^", {
         enabledmods: [],
         currentmod: [1,2,3],
 
-        highestmod: new Decimal(0),
+        highestmod: new Decimal(1),
+
+        earncap: new Decimal(1),
 
         prestige() {
+            if (player["^"].modbonus.gt(player["^"].highestmod) && player["^"].points.gte(new Decimal(2).pow(1024))) {
+                player["^"].highestmod = player["^"].modbonus
+            }
             player["^"].upgrades = []
             player["^"].buyables[11] = new Decimal(0)
             player["^"].chargedpoints = player["^"].chargedpoints.add(this.prestigeformula())
             player["^"].points = new Decimal(0)
             player["^"].clicks = new Decimal(0)
 
-            if (player["^"].chargedpoints.add(this.prestigeformula()).gte(1) && player["^"].modbonus.gt(player["^"].highestmod)) {
-                player["^"].highestmod = player["^"].modbonus
-            }
 
         },
         reset(layer) {
@@ -44,10 +46,10 @@ addLayer("^", {
             }
             else {
                 if (hasMilestone("^", 2)) {
-                    return player["^"].points.div("1.8e308").times(player["^"].modbonus.add(1)).times(player["^"].highestmod)
+                    return player["^"].points.add(1).log("1.8e308").times(player["^"].modbonus.add(1)).times(player["^"].highestmod.add(1))
                 }
                 else {
-                    return player["^"].points.div("1.8e308").times(player["^"].modbonus.add(1))
+                    return player["^"].points.add(1).log("1.8e308").times(player["^"].modbonus.add(1))
                 }
             }
         },
@@ -80,6 +82,14 @@ addLayer("^", {
             return false
         }
     }},
+    update() {
+        if (hasMilestone("^", 3) && player["^"].clicks.gte(1)) {
+            if (!player["^"].points.add(player["^"].earn).gte("1.8e308")) {
+                tmp["^"].clickables[11].onClick()
+            }
+            buyBuyable("^",11)
+        }
+    },
     color: "rgb(131, 0, 231)",
     requires: new Decimal(Infinity), // Can be a function that takes requirement increases into account
     resource: "^", // Name of prestige currency
@@ -161,7 +171,10 @@ addLayer("^", {
         if (hasUpgrade("^", 44)) {e = e.pow(1.44)} 
         if (hasUpgrade("^", 45)) {e = e.pow(1.55)} 
         if (hasUpgrade("^", 46)) {e = e.pow(1.66)} 
-
+        if (hasUpgrade("^", 51)) {e = e.pow(2)} 
+        if (hasUpgrade("^", 52)) {e = e.pow(3)} 
+        if (hasUpgrade("^", 53)) {e = e.pow(5)} 
+        if (hasUpgrade("^", 54)) {e = e.tetrate(new Decimal(1).add("1e-5"))} 
 
         if (player["^"].modenabled("Rooted returns")) {e = e.pow(0.5)}
         if (player["^"].modenabled("Squared returns")) {e = e.pow(2)}
@@ -171,9 +184,24 @@ addLayer("^", {
 
 
 
-        if (player["^"].chargedpoints.gt(0)) {e = e.pow(player["^"].chargedpoints.add(1).log(1e3).add(1))}
+        if (player["^"].chargedpoints.gt(0)) {e = e.pow(player["^"].chargedpoints.add(1).log(1e3).add(1).tetrate(new Decimal(hasMilestone("^", 6)+0).times(3).max(1)))}
         if (hasMilestone("^", 1)) {e = e.times(10)}
-        if (hasMilestone("^", 3) && player["^"].modbonus.sign == 1) {e = e.pow(player["^"].modbonus)}
+        if (hasMilestone("^", 4) && player["^"].modbonus.sign == 1) {e = e.pow(player["^"].modbonus.add(1))}
+
+
+
+
+
+
+
+
+
+
+        if (hasMilestone("^", 5)) {
+            if (e.gte("1.8e308")) {
+                e = new Decimal("1.8e308").times(e.div(e.pow(0.5)))
+            }
+        }
         player["^"].earn = e
         return e
     },
@@ -191,13 +219,19 @@ addLayer("^", {
         }
         return player[this.layer].shown
     },
-    unbrokeninf() {
-        if (player["^"].points.gte("1.8e308")) {
-            player["^"].points = new Decimal("1.8e308")
+    brokeninf() {
+        if (!hasMilestone("^", 5)) {
+            if (player["^"].points.gte("1.8e308")) {
+                player["^"].points = new Decimal("1.8e308")
+            }
+            if (player["^"].earn.gte("1.8e308")) {
+                player["^"].earn = new Decimal("1.8e308")
+            }
         }
-        if (player["^"].earn.gte("1.8e308")) {
-            player["^"].earn = new Decimal("1.8e308")
+        else {
+
         }
+
     },
     getmodbonus() {
         player["^"].modbonus = new Decimal(0)
@@ -221,7 +255,7 @@ addLayer("^", {
                 if (player["^"].modenabled("too broken...")) rng = rng * 20
                 let x = Math.floor(Math.random() * rng)
                 if (x == 0) {
-                    if (player["^"].points.add(player["^"].earn).gt("1.8e308") && !hasMilestone("^", 1)) {
+                    if (player["^"].points.add(player["^"].earn).gt("1.8e308") && !hasMilestone("^", 5)) {
                         addPoints("^", new Decimal("1.8e308").sub(player["^"].points))
                     }
                     else {
@@ -538,6 +572,36 @@ addLayer("^", {
             cost: new Decimal(1e250),
             unlocked() {return hasUpgrade("^", 44)},
         },
+        46: {
+            title: "Lazier game development",
+            description: "^1.66 earn",
+            cost: new Decimal("4e731"),
+            unlocked() {return hasUpgrade("^", 45) && hasMilestone("^", 5)},
+        },
+        51: {
+            title: "Broken Infinity",
+            description: "^2 earn",
+            cost: new Decimal("1e983"),
+            unlocked() {return hasUpgrade("^", 46)},
+        },
+        52: {
+            title: "Thats alot of ^",
+            description: "^3 earn",
+            cost: new Decimal("3e3032"),
+            unlocked() {return hasUpgrade("^", 51)},
+        },
+        53: {
+            title: "Will you get to infinity?",
+            description: "^5 earn",
+            cost: new Decimal("5e10305"),
+            unlocked() {return hasUpgrade("^", 52)},
+        },
+        54: {
+            title: "Yes you will",
+            description: "^^1.00001 earn",
+            cost: new Decimal("1e75780"),
+            unlocked() {return hasUpgrade("^", 53)},
+        },
         
         
     },
@@ -550,16 +614,35 @@ addLayer("^", {
         },
         2: {
             requirementDescription: "50 C^",
-            effectDescription: "Your highest modifer multiplier on prestige is permanent",
+            effectDescription() {return "Your highest modifer multiplier on prestige is permanent<br> Currently: "+player["^"].highestmod.add(1)+"x"},
             unlocked() {return true},
             done() {return player["^"].chargedpoints.gte(50)},
         },
         3: {
+            requirementDescription: "75 C^",
+            effectDescription: "Does a click every tick (activated when first clicked) and autobuy ^ Exponential Increase<br>Autoclick only works until the next click is greater than or equal to 1.8e308",
+            unlocked() {return true},
+            done() {return player["^"].chargedpoints.gte(75)},
+        },
+        4: {
             requirementDescription: "100 C^",
-            effectDescription: "Your modifier percent boosts ^",
+            effectDescription() {return "Your modifier percent boosts ^<br> Currently: ^"+player["^"].modbonus.add(1)},
             unlocked() {return true},
             done() {return player["^"].chargedpoints.gte(100)},
-        }
+        },
+        5: {
+            requirementDescription: "250 C^",
+            effectDescription() {return "Break Infinity<br>^ gain is nerfed depending on ^ gain past 1.8e308"},
+            unlocked() {return hasMilestone("^", 1) && hasMilestone("^", 2) && hasMilestone("^", 3) && hasMilestone("^", 4)},
+            done() {return player["^"].chargedpoints.gte(250)},
+        },
+        6: {
+            requirementDescription: "10000 C^",
+            effectDescription() {return "Tetrate the C^ effect by 5"},
+            unlocked() {return hasMilestone("^", 5)},
+            done() {return player["^"].chargedpoints.gte(10000)},
+        },
+
     },
     buyables: {
         11: {
@@ -578,7 +661,22 @@ addLayer("^", {
                     p = new Decimal(11)
                 }
                 if (x.gte(700)) {
-                    p = new Decimal(15)
+                    p = new Decimal(43.15)
+                }
+                if (x.gte(1500)) {
+                    p = new Decimal(150)
+                }
+                if (x.gte(2000)) {
+                    p = new Decimal(500)
+                }
+                if (x.gte(2000)) {
+                    p = new Decimal(500)
+                }
+                if (x.gte(2500)) {
+                    p = new Decimal(1e3)
+                }
+                if (x.gte(3000)) {
+                    return new Decimal(3000).pow(this.effect(new Decimal(3000))).pow(p).pow(x.sub(3000).add(1).pow(1.01).add(1))
                 }
                 return x.pow(this.effect(x)).pow(p)
             },
@@ -640,7 +738,7 @@ addLayer("^", {
                     return 'You get a bonus <h2 style="color: ' + tmp[this.layer].color + +'; text-shadow: 0px 0px 10px ' + tmp[this.layer].color + '; display: inline;">' + formatWhole(player[this.layer].modbonus.times(100)) +'%</h2><span> Charged ^</span>';
                 }],
                 ["display-text", function() { 
-                    return 'Your charged ^ boosts ^ by <h2 style="color: ' + tmp[this.layer].color + +'; text-shadow: 0px 0px 10px ' + tmp[this.layer].color + '; display: inline;"> ^' + format(player["^"].chargedpoints.add(1).log(1e3).add(1), 3) +'</h2>';
+                    return 'Your charged ^ boosts ^ by <h2 style="color: ' + tmp[this.layer].color + +'; text-shadow: 0px 0px 10px ' + tmp[this.layer].color + '; display: inline;"> ^' + format(player["^"].chargedpoints.add(1).log(1e3).add(1).tetrate(new Decimal(hasMilestone("^", 6)+0).times(3).max(1)), 3) +'</h2>';
                 }],
                 "blank",
                 ["clickable",[12]],
@@ -697,6 +795,13 @@ addLayer("^", {
                 return hasUpgrade("^", 34) && player.tab == "^" && player.subtabs["^"].mainTabs == "Buyables"
             },
             tooltip: "what"
+        },
+        15: {
+            name: "funny",
+            done() {
+                return player['^'].points.gte("1e69420")
+            },
+            tooltip: "get 1e69420 ^"
         },
     }
 })

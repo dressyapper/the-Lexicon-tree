@@ -48,8 +48,8 @@ addLayer("D", {
     },
     onPrestige() {
         player.D.ddunlock = true
-        if (player.D.mode == "Nil") {
-            player.D.mode == "Dawn"
+        if (player.D.mode != "Nil") {
+            player.D.mode == "Nil"
         }
     },
     passiveGeneration() {
@@ -107,13 +107,16 @@ addLayer("D", {
 
 
         layerDataReset(this.layer, keep)
+        player.D.mode = "Nil"
+
+    
     },
     upgrades: {
         11: {
             title: "Dawn and Dusk",
             description: "Unlock something...",
             cost: new Decimal(0),
-            unlocked() {return true},
+            unlocked() {return player.D.total.gte(1) || hasUpgrade("D", 11)},
             onPurchase() {
                 player.D.ddunlock = true
             }
@@ -154,7 +157,7 @@ addLayer("D", {
             title: "Definite convenience",
             description: "Keep C challenges 11 to 15 (dont worry they are counted as completed when buying this upgrade)",
             cost: new Decimal(1),
-            unlocked() {return hasAchievement("Ach", 44)},
+            unlocked() {return true},
             onPurchase() {
                 if (player.C.challenges[11] == 0) {
                     player.C.challenges[11] = 1
@@ -650,7 +653,7 @@ addLayer("D", {
                 "prestige-button",
                 "blank",
                 ["upgrades",[1]],
-                ["upgrades", () => {if (player.D.total.gte(2)) {return [2,3,4,5]} else {return []}}],
+                ["upgrades", () => {if (player.D.total.gte(1)) {return [2,3,4,5]} else {return []}}],
                 "blank",
             ],
     
@@ -674,52 +677,52 @@ addLayer("D", {
 
                     if (mode == "Dawn") {
                         text("LP is boosted by 2x")
-                        text("Point gen is disabled offline")
+                        text("Point gen is disabled offline<br>")
                         if (hasUpgrade("D", 12)) {
-                            text("Boost A based on reset time<br> Currently: "+format(new Decimal(player.A.resetTime).pow(0.01))+"x<br>")
+                            text("Boost A based on reset time<br> Currently: "+format(new Decimal(player.A.resetTime).pow(0.01))+"x")
                             text("Lose A the longer your offline<br>")
                         }
                         if (hasUpgrade("D", 31)) {
                             text("& boosts points while online<br> Currently: "+format(player["&"].points.add(1).log(100).add(1))+"x")
-                            text("& divides points while offline<br> Currently: /"+format(player["&"].points.add(1).log(2).add(1)))
+                            text("& divides points while offline<br> Currently: /"+format(player["&"].points.add(1).log(2).add(1))+"<br>")
                         }
                         if (hasUpgrade("D", 13)) {
-                            text("Boost B based on points<br> Currently: "+format(player.points.add(1).log(100000).add(1))+"x<br>")
-                            text("B divides points by offtime*(B^0.5) when offline")
+                            text("Boost B based on points<br> Currently: "+format(player.points.add(1).log(100000).add(1))+"x")
+                            text("B divides points by offtime*(B^0.5) when offline<br>")
                         }
                         if (hasUpgrade("D", 14)) {
                             text("C layer effect is 2x when online")
-                            text("C is square rooted when offline")
+                            text("C is square rooted when offline<br>")
                         }
                         if (hasUpgrade("D", 15)) {
                             text("Generate 50% of your D reset while online")
-                            text("Divide everything else by D while offline")
+                            text("Divide everything else by D while offline<br>")
                         }
                     
 
                     }
                     else if (mode == "Dusk") {
                         text("LP is /10 when online")
-                        text("LP is 5x when offline")
+                        text("LP is 5x when offline<br>")
                         if (hasUpgrade("D", 12)) {
                             text("A is divided by 3")
-                            text("You can passively generate A offline")
+                            text("You can passively generate A offline<br>")
                         }
                         if (hasUpgrade("D", 31)) {
                             text("& divides points while online<br> Currently: /"+format(player["&"].points.add(1).log(2).add(1)))
-                            text("& boosts points while offline<br> Currently: "+format(player["&"].points.add(1).log(100).add(1))+"x")
+                            text("& boosts points while offline<br> Currently: "+format(player["&"].points.add(1).log(100).add(1))+"x<br>")
                         }
                         if (hasUpgrade("D", 13)) {
                             text("B is divided by 7")
-                            text("You can passively generate B offline")
+                            text("You can passively generate B offline<br>")
                         }
                         if (hasUpgrade("D", 14)) {
                             text("C is divided by 15")
-                            text("C layer effect is 3x when offline")
+                            text("C layer effect is 3x when offline<br>")
                         }
                         if (hasUpgrade("D", 15)) {
                             text("D is square rooted when online")
-                            text("Generate 75% of your D reset when offline")
+                            text("Generate 75% of your D reset when offline<br>")
                         }
                         
                     }

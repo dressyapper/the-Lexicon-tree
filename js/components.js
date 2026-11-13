@@ -606,6 +606,11 @@ function loadVue() {
 		`
 	})
 
+
+
+
+	
+
 	// SYSTEM COMPONENTS
 	Vue.component('node-mark', systemComponents['node-mark'])
 	Vue.component('tab-buttons', systemComponents['tab-buttons'])

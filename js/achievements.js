@@ -89,7 +89,7 @@ addLayer("Ach", {
             tooltip() {
                 if (hasAchievement(this.layer, this.id)) {
                     let desc = "Get 2000 A without any A upgrades"
-                    let effectdesc = "Boost A for every A upgrade you bought"
+                    let effectdesc = "Boost LP for every A upgrade you bought"
                     return desc+"<br>Reward: "+effectdesc+"<br>Currently: "+this.effect()+"x"
                 }
                 else {
@@ -230,7 +230,7 @@ addLayer("Ach", {
                 if (hasAchievement(this.layer, this.id)) {
                     let desc = "Buy 625 of Bottom Layer Support"
                     let effectdesc = "Every Bottom Layer Support bought gives an additional +0.05x to LP, capped at 100"
-                    return desc+"<br>Reward: "+effectdesc+"<br>Currently: "+new Decimal(0.05).times(getBuyableAmount("B", 12)).add(1)+'x'
+                    return desc+"<br>Reward: "+effectdesc+"<br>Currently: "+format(new Decimal(0.05).times(getBuyableAmount("B", 11)).add(1).min(100))+'x'
                 }
                 else {
                     let desc = "Buy 625 of Bottom Layer Support"
@@ -238,11 +238,11 @@ addLayer("Ach", {
                 }
             },
             effect() {
-                if (+new Decimal(0.05).times(getBuyableAmount("B", 12)).add(1).gte(100)) {
+                if (+new Decimal(0.05).times(getBuyableAmount("B", 11)).add(1).gte(100)) {
                     return new Decimal(100)
                 }
                 else {
-                    return new Decimal(0.05).times(getBuyableAmount("B", 12)).add(1)
+                    return new Decimal(0.05).times(getBuyableAmount("B", 11)).add(1)
                 }
             },
             style() {
@@ -552,6 +552,57 @@ addLayer("Ach", {
                 let desc = "Get 3 factories"
                 if (hasAchievement(this.layer, this.id)) {
                     let effectdesc = "Unlock a new tab"
+                    return desc+"<br>Reward: "+effectdesc
+                }
+                else {
+                    return desc
+                }
+            },
+            style() {
+                return {
+                    "border-color": "white",
+                    "border-width": "2px"
+                }
+            }
+        },
+        71: {
+            name: "Faster than energy itself",
+            tooltip: "Generate product 10000 times every second or get the production rate to less than 0.0001",
+            done() {
+                return player.F.rate.lte(0.0001)
+            },
+        },
+        72: {
+            name: "Generic idle game",
+            done() {
+                return player.G.points.gte(1)
+            },
+            tooltip() {
+                let desc = "Reset for generators"
+                if (hasAchievement(this.layer, this.id)) {
+                    let effectdesc = "Perpetual Energy (Energy upgrade 21) shows at only 2 E upgrades bought and you unlock Charging in E if you have atleast 1 total F"
+                    return desc+"<br>Reward: "+effectdesc
+                }
+                else {
+                    return desc
+                }
+            },
+            style() {
+                return {
+                    "border-color": "white",
+                    "border-width": "2px"
+                }
+            }
+        },
+        73: {
+            name: "Thats alot of LP",
+            done() {
+                return player.G.generators.lp.level.gte(1500)
+            },
+            tooltip() {
+                let desc = "Get your LP generator to level 1500"
+                if (hasAchievement(this.layer, this.id)) {
+                    let effectdesc = "+1000 LP base"
                     return desc+"<br>Reward: "+effectdesc
                 }
                 else {

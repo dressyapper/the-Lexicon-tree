@@ -69,6 +69,12 @@ addLayer("E", {
             req = req.times(upgradeEffect("F", 46))
         }
         if (hasUpgrade("F", 52)) req = req.times(10)
+        if (hasUpgrade("F", 64)) {
+            req = req.times(buyableEffect("F",11).times(10))
+        }
+        else {
+            req = req.times(buyableEffect("F",11))
+        }
 
         return req
     },
@@ -85,13 +91,6 @@ addLayer("E", {
             return false
         }
     },
-    doReset(reset) {
-        if (layers[reset].row <= this.row) return 
-
-        let keep = ["input"]
-
-        layerDataReset(this.layer, keep)
-    },
     prestigeButtonText() {
         try {
             return `${tmp.E.resetDescription !== undefined ? tmp.E.resetDescription : "Reset for "}+<b>${formatWhole(tmp.E.resetGain)}</b> ${tmp.E.resource}<br><br>${player.E.points.lt(30) ? (tmp.E.baseAmount.gte(tmp.E.nextAt) && (tmp.E.canBuyMax !== undefined) && tmp.E.canBuyMax ? "Next:" : "Req:") : ""} ${formatWhole(tmp.E.baseAmount)} / ${(tmp[layer].roundUpCost ? formatWhole(tmp.E.nextAtDisp) : format(tmp.E.nextAtDisp))} ${tmp.E.baseResource}		
@@ -102,6 +101,7 @@ addLayer("E", {
         }
     },
     generate() {
+        let cap = new Decimal(10)
         if (tmp.E.resetGain instanceof Decimal && !player.paused && !layerF.isTrading("CreationPlaza")) {
             let pg
             if (player.F.currentTrading.includes("EnergyCo")) {
@@ -111,12 +111,24 @@ addLayer("E", {
                 pg = player.E.points.add(1).log(10).div(100).min(10)
             }
 
+
+            if (player.F.currentTrading.includes("EnergyCo")) {
+                cap = cap.times(10)
+            }
+            if (hasUpgrade("F", 64)) {
+                cap = cap.add(getBuyableAmount("F",11).times(12.5))
+            }
+            else {
+                cap = cap.add(getBuyableAmount("F",11).times(1.25))
+            }
+
         
 
             if (hasUpgrade("E", 21)) {
                 addPoints("E", tmp.E.resetGain.times(pg))
             } 
         }
+        return cap
     },
     
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -159,7 +171,7 @@ addLayer("E", {
         return obj
     },
     autochallenge() {
-        if (hasUpgrade("$", 23)) {
+        if (hasUpgrade("$", 23) && (hasUpgrade("E",11) || (player.F.total.gte(1) && hasAchievement("Ach", 72)))) {
             if (player.points.gte(new Decimal(10).pow(new Decimal(challengeCompletions("E",11)).add(1).times(3)).times(tmp.E.challenges[11].inChallengeEffect))) {
                 tmp.E.challenges[11].onComplete()
                 player.E.challenges[11] = player.E.challenges[11] + 1
@@ -180,7 +192,7 @@ addLayer("E", {
     doReset(reset) {
         if (layers[reset].row <= this.row) return 
 
-        let keep = [""]
+        let keep = ["input"]
 
 
         layerDataReset(this.layer, keep)
@@ -190,7 +202,7 @@ addLayer("E", {
             title: "Energy",
             description: "Unlock Energizer & Charging",
             cost: new Decimal(0),
-            unlocked() {return hasAchievement("Ach", 51) && (player.E.points.gte(1) || hasUpgrade("E", 11))},
+            unlocked() {return (hasAchievement("Ach", 51) && player.E.points.gte(1)) || hasUpgrade("E", 11)},
         },
         12: {
             title: "Extension Installer LP",
@@ -225,21 +237,16 @@ addLayer("E", {
         21: {
             title: "Perpetual Energy",
             description() {
-                if (player.F.currentTrading.includes("EnergyCo")) {
-                    return "Passively generate energy at a rate based on energy (capped at 10000%)"
-                }
-                else {
-                    return "Passively generate energy at a rate based on energy (capped at 1000%)"
-                }
+                return "Passively generate energy at a rate based on energy (capped at "+tmp.E.generate.times(100)+"%)"
             },
             cost: new Decimal(1),
-            unlocked() {return hasUpgrade("E", 12) && hasUpgrade("E", 13) && hasUpgrade("E", 14) && hasUpgrade("E", 15) && hasUpgrade("E", 16)},
+            unlocked() {return (hasUpgrade("E", 12) && hasUpgrade("E", 13) && hasUpgrade("E", 14) && hasUpgrade("E", 15) && hasUpgrade("E", 16) && hasUpgrade("E", 21)) || (player.E.upgrades.length > 2 && hasAchievement("Ach", 72))},
         },
         22: {
             title: "Energy powered automation",
             description: "Generate 150% of A reset, 75% of B reset & ^25 the cap (woahwoahwo (2.5 woahs)), 50% of C reset and +25% of D reset and improve the & formula",
             cost: new Decimal(50000),
-            unlocked() {return hasUpgrade("E", 21)}
+            unlocked() {return hasUpgrade("E", 12) && hasUpgrade("E", 13) && hasUpgrade("E", 14) && hasUpgrade("E", 15) && hasUpgrade("E", 16) && hasUpgrade("E", 21)}
         },
         23: {
             title: "Lexicon Charger",
@@ -346,7 +353,7 @@ addLayer("E", {
 
         31: {
             title: "Extra bonuses",
-            description: "All allocated energy boosts E reset",
+            description: "All allocated energy boosts E reset (You may want to boost LP if you didn't already)",
             cost: new Decimal(75),
             effectCap() {
                 let cap = new Decimal(1000)
@@ -373,7 +380,7 @@ addLayer("E", {
                 }
                 else {
                     return format(upgradeEffect(this.layer, this.id))+"x"
- x               }
+                }
             },
             unlocked() {return hasAchievement("Ach", 54)},
         },
@@ -707,7 +714,7 @@ addLayer("E", {
                 return player.points.gte(new Decimal(10).pow(new Decimal(challengeCompletions("E",11)).add(1).times(3)))
             },
             unlocked() { 
-                return (hasUpgrade("E",11)) 
+                return hasUpgrade("E",11) || (player.F.total.gte(1) && hasAchievement("Ach", 72))
             },
             inChallengeEffect() {
                 if (hasUpgrade("E", 25)) {
@@ -782,7 +789,7 @@ addLayer("E", {
                 "blank",
             ],
 
-            unlocked() {return hasUpgrade("E", 11)}
+            unlocked() {return hasUpgrade("E", 11) || (player.F.total.gte(1) && hasAchievement("Ach", 72))}
         },
     },
 })

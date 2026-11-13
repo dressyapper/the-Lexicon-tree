@@ -29,7 +29,10 @@ addLayer("Sach", {
                 return hasAchievement(this.layer, this.id)
             },
             style() {
+                return {
+                    "all": "auto",
 
+                }
             }
         },
         "99991": {
@@ -116,10 +119,25 @@ addLayer("Sach", {
 
             }
         },
+
+        11: {
+            name: "Wrong way",
+            done() {
+                let rng = Math.random()
+                return getPointGen().lte(new Decimal(2).pow(1024).pow(-1))
+            },
+            tooltip() {
+                let desc = "Get the other infinite gain"
+                return desc
+            },
+            style() {
+
+            }
+        },
     },
     clickables: {
         11: {
-            title: "",
+            title: "hi",
             canClick() {return true},
             onClick() {
                 player.Sach.x = true
@@ -128,7 +146,7 @@ addLayer("Sach", {
             },
             style() {
                 return {
-                    "opacity":"0",
+                    "opacity":"0.02",
                 }
             }
         },

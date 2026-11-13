@@ -1,5 +1,5 @@
 let modInfo = {
-	name: "The Alphabet Tree",
+	name: "The Lexicon Tree",
 	author: "me",
 	pointsName: "Lexiconal Points",
 	modFiles: ["Layers/a.js","Layers/b.js","Layers/c.js","Layers/d.js","Layers/e.js","Layers/f.js","Layers/g.js","Layers/h.js","Layers/i.js","Layers/j.js","Layers/k.js","Layers/l.js","Layers/m.js","Layers/n.js","Layers/o.js","Layers/p.js","Layers/q.js","Layers/r.js","Layers/s.js","Layers/t.js","Layers/u.js","Layers/v.js","Layers/w.js","Layers/x.js","Layers/y.js","Layers/z.js","achievements.js", "tree.js","dev.js","Layers/Sublayers/&.js", "Layers/Sublayers/$.js", "Layers/Sublayers/QM.js", "Layers/Sublayers/^.js", "egg.js","sachievements.js"],
@@ -111,13 +111,10 @@ function getPointGen() {
 	if (player.D.mode == "Dusk" && !player.offTime) gain = gain.div(10)
 	if (player.D.mode == "Dusk" && player.offTime) gain = gain.times(5)
 	if (player.D.mode == "Dusk" && !player.offTime && hasUpgrade("D", 12)) gain = gain.div(new Decimal(player.A.points).add(1).pow(0.4))
-
 	if (player.D.mode == "Dusk" && player.offTime && hasUpgrade("D", 31)) gain = gain.times(player["&"].points.add(1).log(100).add(1))
 	if (player.D.mode == "Dusk" && !player.offTime && hasUpgrade("D", 31)) gain = gain.div(player["&"].points.add(1).log(2).add(1))
-
 	if (player.D.mode == "Dawn" && player.offTime && hasUpgrade("D", 31)) gain = gain.div(player["&"].points.add(1).log(2).add(1))
 	if (player.D.mode == "Dawn" && !player.offTime && hasUpgrade("D", 31)) gain = gain.times(player["&"].points.add(1).log(100).add(1))
-
 	if (hasUpgrade("D", 15) && player.D.mode == "Dawn" && player.offTime) gain = gain.div(player.D.points.add(1))
 	if (player.E.energizer.lp.gte(1)) gain = gain.times(layerE.earnformula.lp(player.E.energizer.lp))
 	if (inChallenge("E", 11)) gain = gain.div(tmp.E.challenges["11"].inChallengeEffect)
@@ -130,6 +127,81 @@ function getPointGen() {
 	if (hasUpgrade("A", 52)) gain = gain.times(1e5)
 	if (hasUpgrade("E", 35)) gain = gain.pow(1.3)
 	gain = gain.times(layerEffect("F"))
+	if (inChallenge("G", 11)) {
+		gain = gain.div(player.G.anti.lp)
+	}
+	gain = gain.times(player.G.generators.lp.effect(player.G.generators.lp.level))
+	if (inChallenge("G", 12)) {
+		gain = gain.div(player.B.points.max(1).times(player.C.points.max(1).times(player.D.points.max(1).times(player.E.points.max(1).times(player.F.points.max(1)).pow(new Decimal(challengeCompletions("G", 12)).add(1.1).pow(7))))))
+	}
+	if (inChallenge("G", 13)) {
+		if (player.B.points.gt(0) || player.C.points.gt(0) || player.D.points.gt(0) || player.E.points.gt(0) || player.F.points.gt(0) || player.F.product.gt(0)) {
+			gain = new Decimal(0)
+		}
+	}
+	if (inChallenge("G", 14)) gain = gain.pow(0.05)
+	if (inChallenge("G", 14)) {
+		if (player.C.points.gt(0) || player.D.points.gt(0) || player.E.points.gt(0) || player.F.points.gt(0) || player.F.product.gt(0)) {
+			gain = new Decimal(0)
+		}
+	}
+	if (inChallenge("G", 14)) gain = gain.add(buyableEffect("B", 21))
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if (player.points.add(gain).gte(new Decimal(2).pow(1024)) && !player.brokeninf) {
+		gain = new Decimal(0)
+	}
 
 	return gain
 }
@@ -140,6 +212,7 @@ function addedPlayerData() { return {
 	currentChallenge: false,
 	trueTimePlayed: 0,
 	switched: [],
+	brokeninf: false,
 
 	hidemilestones: {
 		a: false,
@@ -186,6 +259,13 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+	if (localStorage.getItem("The-Alphabet-Tree-me") || getModID() != 'The-Lexicon-Tree-me') {
+		localStorage.setItem('The-Lexicon-Tree-me', localStorage.getItem("The-Alphabet-Tree-me"))
+		localStorage.setItem('The-Lexicon-Tree-me_options', localStorage.getItem("The-Alphabet-Tree-me_options"))
+		location.reload()
+	}
+
+
 	if (Object.keys(player).includes("🥚")) {
 		delete player['🥚']
 	}
@@ -232,7 +312,7 @@ onkeydown = (ev) => {
 }
 
 function offtime(bool) {
-	if (hasUpgrade("$", 14) && player.D.auto) {
+	if (hasUpgrade("$", 14) && player.D.auto && hasUpgrade("D", 11)) {
 		if (bool) {
 			if (player.D.mode != "Dusk") {
 				console.log("offline")
@@ -243,9 +323,12 @@ function offtime(bool) {
 			if (player.D.mode != "Dawn") {
 				console.log("online")
 				player.D.mode = "Dawn"
+				
 			}
 		}
 	}
+
+	
 
 }
 
@@ -259,6 +342,7 @@ function validateThemes() {
 		Diamond: hasAchievement("Ach", 41),
 		Energized: hasAchievement("Ach", 51),
 		Fish: hasAchievement("Ach", 63),
+		Galaxy: hasAchievement("Ach", 72)
 	}
 
 	for (i in validate) {
@@ -281,7 +365,10 @@ function onSwitchTab(tab) {
 		player.switched.splice(0, 1)
 	}
 
+	player.currentTab = tab
+
 	player.switched.push(tab)
+
 
 	/*if (player.switched[9] == "D" && player.switched[8] == "E" && player.switched[7] == "D" && player.switched[6] == "E") {
 		if (Math.random() < 0.1 && !player.egg) {
@@ -290,6 +377,14 @@ function onSwitchTab(tab) {
 		}
 	}*/
 	
+}
+
+function colorSubtract(v1,v2,x) {
+	let c1 = [v1.split(",")[0].slice(4,v1.split(",")[0].length),v1.split(",")[1],v1.split(",")[2].slice(0,v1.split(",")[2].length-1)]
+	let c2 = [v2.split(",")[0].slice(4,v2.split(",")[0].length),v2.split(",")[1],v2.split(",")[2].slice(0,v2.split(",")[2].length-1)]
+
+
+	return "rgb("+(Number(c1[0])-Number(c2[0]))+","+(Number(c1[1])-Number(c2[1]))+","+(Number(c1[2])-Number(c2[2]))+")"
 }
 
 

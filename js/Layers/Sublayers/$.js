@@ -84,7 +84,7 @@ addLayer("$", {
             title: "Energy Powered Energizer",
             description: "Unlock an option to constantly max all energizer (set in amount after max)",
             cost: new Decimal(2),
-            unlocked() {return hasUpgrade("E", 32) || hasUpgrade("$", 21)},
+            unlocked() {return hasUpgrade("E", 32) || hasUpgrade("$", 21) && hasUpgrade("$", 15)},
         },
         22: {
             title: "True Definite Convenience",
@@ -111,12 +111,13 @@ addLayer("$", {
             title: "Respec",
             canClick() {return true},
             onClick() {
-                if (!prompt("Are you REALLY sure you want to do this, "+Object.values(ROW_LAYERS[getHighestUnlockedRow()])[0]+" will be reset!"))
-                for (i in player["$"].upgrades) {
-                    player["$"].points = player["$"].points.add(tmp['$'].upgrades[player["$"].upgrades[i]].cost)
+                if (confirm("Are you REALLY sure you want to do this, "+Object.values(ROW_LAYERS[getHighestUnlockedRow()])[0]+" will be reset!")) {
+                    for (i in player["$"].upgrades) {
+                        player["$"].points = player["$"].points.add(tmp['$'].upgrades[player["$"].upgrades[i]].cost)
+                    }
+                    player["$"].upgrades = []
+                    doReset(Object.values(ROW_LAYERS[getHighestUnlockedRow()])[0], true)
                 }
-                player["$"].upgrades = []
-                doReset(Object.values(ROW_LAYERS[getHighestUnlockedRow()])[0], true)
             },
             display() {
                 return "Respec all your upgrades but reset your highest layer without any bonuses"

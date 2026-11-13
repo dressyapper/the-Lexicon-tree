@@ -94,6 +94,8 @@ addLayer("B", {
         if (player.E.energizer.b.gte(1)) mult = mult.times(layerE.earnformula.b(player.E.energizer.b))
         if (hasUpgrade("F", 35)) mult = mult.times(upgradeEffect("F", 35))
         if (hasUpgrade("F", 52)) mult = mult.times(10)
+        if (inChallenge("G", 14)) {mult = mult.div(4)}
+        else {mult = mult.times(player.G.generators.b.effect(player.G.generators.b.level).max(1))}
 
         return mult
     },
@@ -451,6 +453,42 @@ addLayer("B", {
             },
             effect(x) {
                 let eff = new Decimal(2).times(x.add(1))
+
+                return eff
+            },
+        },
+        21: {
+            title: "Buffed LP",
+            description: "Boost LP unaffected by challenge effect",
+            purchaseLimit() {
+                let limit = new Decimal(100)
+
+
+                return limit.floor()
+            },
+            unlocked() {return inChallenge("G", 14)},
+            cost(x) {
+                return new Decimal(1).add(x.times(x.add(1).log(2).floor().max(1)))
+            },
+            display() {
+                if (this.purchaseLimit) {
+                    return ""+this.description+"<br>Cost: " + format(this.cost()) + " B" + "<br>Bought: " + getBuyableAmount(this.layer, this.id) + "/"+this.purchaseLimit()+"<br>Effect: +"+format(buyableEffect(this.layer, this.id))
+                }
+                else {
+                    return ""+this.description+"<br>Cost: " + format(this.cost()) + " B" + "<br>Bought: " + getBuyableAmount(this.layer, this.id) + "<br>Effect: +"+format(buyableEffect(this.layer, this.id))
+                }
+            },
+            canAfford() {
+                return player[this.layer].points.gte(this.cost())
+            },
+            buy() {
+                if (player[this.layer].points.sub(this.cost()).gte(0)){
+                    player[this.layer].points = player[this.layer].points.sub(this.cost())
+                    setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                }
+            },
+            effect(x) {
+                let eff = new Decimal(1.5).pow(x.pow(1.05))
 
                 return eff
             },
