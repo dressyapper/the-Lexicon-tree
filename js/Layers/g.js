@@ -100,7 +100,7 @@ addLayer("G", {
                 },
     
                 unlocked() {
-                    return hasChallenge("G", 13)
+                    return hasChallenge("G", 14)
                 }
             },
             c: {
@@ -112,7 +112,10 @@ addLayer("G", {
                 base: new Decimal(1),
     
                 // floor(power/req)
-                req: new Decimal(1e100)
+                req: new Decimal(1e100),
+                unlocked() {
+                    return false
+                }
             },
             d: {
                 amt: new Decimal(0),
@@ -123,7 +126,10 @@ addLayer("G", {
                 base: new Decimal(1),
     
                 // floor(power/req)
-                req: new Decimal(1e100)
+                req: new Decimal(1e100),
+                unlocked() {
+                    return false
+                }
             },
             e: {
                 amt: new Decimal(0),
@@ -134,7 +140,10 @@ addLayer("G", {
                 base: new Decimal(1),
     
                 // floor(power/req)
-                req: new Decimal(1e100)
+                req: new Decimal(1e100),
+                unlocked() {
+                    return false
+                }
             },
             f: {
                 amt: new Decimal(0),
@@ -145,7 +154,10 @@ addLayer("G", {
                 base: new Decimal(1),
     
                 // floor(power/req)
-                req: new Decimal(1e100)
+                req: new Decimal(1e100),
+                unlocked() {
+                    return false
+                }
             },
         },
 
