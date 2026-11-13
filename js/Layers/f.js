@@ -691,7 +691,7 @@ addLayer("F", {
         64: {
             title: "Better Energy Factories",
             description: 'Energy Factories are 10x better and cost base is 10x less',
-            cost: new Decimal(1e28),
+            cost: new Decimal(1e27),
 
 
             currencyLayer: "F",

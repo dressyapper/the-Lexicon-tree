@@ -234,6 +234,11 @@ var displayThings = [
 		if (document.URL.split("/")[0] == "file:") {
 			return "YOU ARE IN TESTING MODE"
 		}
+	},
+	()=>{
+		if (player.timePlayed < 3600) {
+			return "If you cant find your save go validate save"
+		}
 	}
 ]
 
