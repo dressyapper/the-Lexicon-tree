@@ -113,8 +113,9 @@ addLayer("G", {
     
                 // floor(power/req)
                 req: new Decimal(1e100),
+    
                 unlocked() {
-                    return false
+                    return hasChallenge("G", 15)
                 }
             },
             d: {
@@ -127,8 +128,9 @@ addLayer("G", {
     
                 // floor(power/req)
                 req: new Decimal(1e100),
+    
                 unlocked() {
-                    return false
+                    return hasChallenge("G", 16)
                 }
             },
             e: {
@@ -141,8 +143,9 @@ addLayer("G", {
     
                 // floor(power/req)
                 req: new Decimal(1e100),
+    
                 unlocked() {
-                    return false
+                    return hasChallenge("G", 21)
                 }
             },
             f: {
@@ -155,8 +158,9 @@ addLayer("G", {
     
                 // floor(power/req)
                 req: new Decimal(1e100),
+    
                 unlocked() {
-                    return false
+                    return hasChallenge("G", 22)
                 }
             },
         },
@@ -194,7 +198,7 @@ addLayer("G", {
                 else {
                     if (gen.unlocked()) {
                         gen.level = gen.power.div(gen.req).floor()
-                        gen.power = gen.power.add(gen.base.div(20).div(new Decimal(gen.level).max(1).pow(0.9).div(new Decimal(challengeCompletions("G",player.G.genbuyableid[genname])).add(1).pow(3)).pow(gen.amt)).max(1.01).log(new Decimal(gen.level).sub(3000).div(100).add(1).max(1.01)).times(player.devSpeed))
+                        gen.power = gen.power.add(gen.base.div(20).div(new Decimal(gen.level).max(1).pow(0.9).div(new Decimal(challengeCompletions("G",player.G.genbuyableid[genname])).add(1).pow(3)).pow(gen.amt)).max(1.01).log(new Decimal(gen.level).sub(3000).div(100).add(1).max(1.01)).times(player.devSpeed || 1))
                     }
                     else {
                         gen.power = new Decimal(0)
