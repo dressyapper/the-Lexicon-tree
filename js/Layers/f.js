@@ -28,7 +28,7 @@ addLayer("F", {
     color: "rgb(0, 0, 255)",
     milestonePopups: true,
     update(diff) {
-        let p = player.F.product.add(player.F.generation.times(new Decimal(1).div(player.F.rate).times(50)).times(diff))
+        let p = player.F.product.add(player.F.generation.times(new Decimal(1).div(player.F.rate).times(50)))
         //rate: player.F.generation.times(new Decimal(1).div(player.F.rate).times(50))
         if (player.paused || (!player.F.enabledrobots && hasUpgrade("F", 31))) {
             
