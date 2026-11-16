@@ -15,6 +15,9 @@ addLayer("E", {
             d: new Decimal(0),
         },
     }},
+    autoUpgrade() {
+        return hasUpgrade("&", 15)
+    },
     update(diff) {
         if (player.E.input instanceof Decimal && player.E.input.eq(0)) {
             if (player.E.input != "max" || player.E.input != "auto") {
