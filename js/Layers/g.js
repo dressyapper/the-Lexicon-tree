@@ -522,7 +522,7 @@ addLayer("G", {
         },
         46: {
             title: "A Earn VI",
-            description: "+100000 generation base (requires 4 challenge completions)",
+            description: "+100000 generation base",
             cost() {return new Decimal(5e10)},
             
             currencyLayer: "G",
@@ -540,7 +540,7 @@ addLayer("G", {
             currencyLayer: "G",
             currencyInternalName: "gps",
             currencyDisplayName() {return "GPS"},
-            unlocked() {return challengeCompletions("G", 12) >= 2 },
+            unlocked() {return challengeCompletions("G", 13) >= 2 },
             pay() {}
         },
         52: {
@@ -607,7 +607,7 @@ addLayer("G", {
             currencyLayer: "G",
             currencyInternalName: "gps",
             currencyDisplayName() {return "GPS"},
-            unlocked() {return challengeCompletions("G", 12) >= 2 },
+            unlocked() {return challengeCompletions("G", 14) >= 2 },
             pay() {}
         },
         62: {
