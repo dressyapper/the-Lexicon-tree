@@ -624,7 +624,7 @@ addLayer("Ach", {
             tooltip() {
                 let desc = "Get the "
                 if (hasAchievement(this.layer, this.id)) {
-                    let effectdesc = "+1000 LP base"
+                    let effectdesc = "The Daytime improvements requirement is now only D along with their upgrades showing."
                     return desc+"<br>Reward: "+effectdesc
                 }
                 else {

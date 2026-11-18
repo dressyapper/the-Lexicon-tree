@@ -124,31 +124,59 @@ addLayer("D", {
         },
         12: {
             title: "AD",
-            description: "Add effects relating to A in Daytime & more upgrades, (you must have all row 2 upgrades to buy)",
+            description() {
+                if (hasAchievement("Ach", 74)) {
+                    return "Add effects relating to A in Daytime & more upgrades"
+                }
+                else {
+                    return "Add effects relating to A in Daytime & more upgrades, (you must have all row 2 upgrades to buy)"
+                }
+            },
             cost: new Decimal(10),
-            canAfford() {return hasUpgrade("D", 21) && hasUpgrade("D", 22) && hasUpgrade("D", 23) && hasUpgrade("D", 24) && hasUpgrade("D", 25) && hasUpgrade("D", 26)},
-            unlocked() {return hasUpgrade("D", 11)},
+            canAfford() {return hasUpgrade("D", 21) && hasUpgrade("D", 22) && hasUpgrade("D", 23) && hasUpgrade("D", 24) && hasUpgrade("D", 25) && hasUpgrade("D", 26) || hasAchievement("Ach", 74)},
+            unlocked() {return hasUpgrade("D", 11) || hasAchievement("Ach", 74)},
         },
         13: {
             title: "BD",
-            description: "Add effects relating to B in Daytime & more upgrades (you must have all row 3 upgrades to buy)",
+            description() {
+                if (hasAchievement("Ach", 74)) {
+                    return "Add effects relating to B in Daytime & more upgrades"
+                }
+                else {
+                    return "Add effects relating to B in Daytime & more upgrades (you must have all row 3 upgrades to buy)"
+                }
+            },
             cost: new Decimal(100),
-            unlocked() {return hasUpgrade("D", 12)},
-            canAfford() {return hasUpgrade("D", 31) && hasUpgrade("D", 32) && hasUpgrade("D", 33) && hasUpgrade("D", 34) && hasUpgrade("D", 35) && hasUpgrade("D", 36)},
+            unlocked() {return hasUpgrade("D", 12) || hasAchievement("Ach", 74)},
+            canAfford() {return hasUpgrade("D", 31) && hasUpgrade("D", 32) && hasUpgrade("D", 33) && hasUpgrade("D", 34) && hasUpgrade("D", 35) && hasUpgrade("D", 36) || hasAchievement("Ach", 74)},
         },
         14: {
             title: "CD",
-            description: "Add effects relating to C in Daytime & more upgrades (you must have all row 4 upgrades to buy)",
+            description() {
+                if (hasAchievement("Ach", 74)) {
+                    return "Add effects relating to C in Daytime & more upgrades"
+                }
+                else {
+                    return "Add effects relating to C in Daytime & more upgrades (you must have all row 4 upgrades to buy)"
+                }
+            },
             cost: new Decimal(1000),
-            unlocked() {return hasUpgrade("D", 13)},
-            canAfford() {return hasUpgrade("D", 41) && hasUpgrade("D", 42) && hasUpgrade("D", 43) && hasUpgrade("D", 44) && hasUpgrade("D", 45) && hasUpgrade("D", 46)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
+            canAfford() {return hasUpgrade("D", 41) && hasUpgrade("D", 42) && hasUpgrade("D", 43) && hasUpgrade("D", 44) && hasUpgrade("D", 45) && hasUpgrade("D", 46) || hasAchievement("Ach", 74)},
         },
         15: {
             title: "DD",
-            description: "Add effects relating to D in Daytime (you must have all row 5 upgrades to buy)",
+            description() {
+                if (hasAchievement("Ach", 74)) {
+                    return "Add effects relating to D in Daytime"
+                }
+                else {
+                    return "Add effects relating to D in Daytime (you must have all row 5 upgrades to buy)"
+                }
+            },
             cost: new Decimal(10000),
-            unlocked() {return hasUpgrade("D", 14)},
-            canAfford() {return hasUpgrade("D", 51) && hasUpgrade("D", 52) && hasUpgrade("D", 53) && hasUpgrade("D", 54) && hasUpgrade("D", 55) && hasUpgrade("D", 56)},
+            unlocked() {return hasUpgrade("D", 14) || hasAchievement("Ach", 74)},
+            canAfford() {return hasUpgrade("D", 51) && hasUpgrade("D", 52) && hasUpgrade("D", 53) && hasUpgrade("D", 54) && hasUpgrade("D", 55) && hasUpgrade("D", 56) || hasAchievement("Ach", 74)},
         },
 
 
@@ -200,7 +228,7 @@ addLayer("D", {
                 }
             },
             cost: new Decimal(1),
-            unlocked() {return hasUpgrade("D",21)},
+            unlocked() {return hasUpgrade("D",21) || hasAchievement("Ach", 74)},
             effect() {
                 if (player.D.mode == "Dawn") {
                     return new Decimal(5).div(new Decimal(player.C.resetTime).add(1).log(100).add(1)).add(1)
@@ -249,25 +277,25 @@ addLayer("D", {
             title: "Too much LP",
             description: "1e5x A and B",
             cost: new Decimal(2),
-            unlocked() {return hasUpgrade("D", 22)},
+            unlocked() {return hasUpgrade("D", 22) || hasAchievement("Ach", 74)},
         },
         24: {
             title: "Too little C",
             description: "Generate 25% of your C",
             cost: new Decimal(5),
-            unlocked() {return hasUpgrade("D", 23)},
+            unlocked() {return hasUpgrade("D", 23) || hasAchievement("Ach", 74)},
         },
         25: {
             title: "2D",
             description: "1.2x D",
             cost: new Decimal(10),
-            unlocked() {return hasUpgrade("D", 24)},
+            unlocked() {return hasUpgrade("D", 24) || hasAchievement("Ach", 74)},
         },
         26: {
             title: "3D",
             description: "1.3x D",
             cost: new Decimal(10),
-            unlocked() {return hasUpgrade("D", 25)},
+            unlocked() {return hasUpgrade("D", 25) || hasAchievement("Ach", 74)},
         },
 
        
@@ -277,19 +305,19 @@ addLayer("D", {
             title: "&D",
             description: "Add effects relating to & in Daytime",
             cost: new Decimal(100),
-            unlocked() {return hasUpgrade("D", 12)},
+            unlocked() {return hasUpgrade("D", 12) || hasAchievement("Ach", 74)},
         },
         32: {
             title: "Team support",
             description: "Team carry (C34) no longer grows multiplicatively and instead grows logarithmically but the cap is increased.",
             cost: new Decimal(5),
-            unlocked() {return hasUpgrade("D", 12)},
+            unlocked() {return hasUpgrade("D", 12) || hasAchievement("Ach", 74)},
         },
         33: {
             title: "Quite Complex",
             description: "2x D",
             cost: new Decimal(15),
-            unlocked() {return hasUpgrade("D", 32)},
+            unlocked() {return hasUpgrade("D", 32) || hasAchievement("Ach", 74)},
         },
         34: {
             title() {
@@ -315,19 +343,19 @@ addLayer("D", {
                 }
             },
             cost: new Decimal(20),
-            unlocked() {return hasUpgrade("D",33)},
+            unlocked() {return hasUpgrade("D",33) || hasAchievement("Ach", 74)},
         },
         35: {
             title: "Definitely the most complex thing you've ever seen",
             description: "5x D ",
             cost: new Decimal(25),
-            unlocked() {return hasUpgrade("D", 34)},
+            unlocked() {return hasUpgrade("D", 34) || hasAchievement("Ach", 74)},
         },
         36: {
             title: "Ccontinent",
             description: "25x C ",
             cost: new Decimal(40),
-            unlocked() {return hasUpgrade("D", 35)},
+            unlocked() {return hasUpgrade("D", 35) || hasAchievement("Ach", 74)},
         },
         41: {
             title: "Dill pickle",
@@ -338,7 +366,7 @@ addLayer("D", {
                 if (hasAchievement("Ach", 65)) c = c.div(5)
                 return c
             },
-            unlocked() {return hasUpgrade("D", 13)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
         },
         42: {
             title: "Dill pickle",
@@ -349,7 +377,7 @@ addLayer("D", {
                 if (hasAchievement("Ach", 65)) c = c.div(5)
                 return c
             },
-            unlocked() {return hasUpgrade("D", 13)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
         },
         43: {
             title: "Dill pickle",
@@ -360,7 +388,7 @@ addLayer("D", {
                 if (hasAchievement("Ach", 65)) c = c.div(5)
                 return c
             },
-            unlocked() {return hasUpgrade("D", 13)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
         },
         44: {
             title: "Dill pickle",
@@ -371,7 +399,7 @@ addLayer("D", {
                 if (hasAchievement("Ach", 65)) c = c.div(5)
                 return c
             },
-            unlocked() {return hasUpgrade("D", 13)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
         },
         45: {
             title: "Dill pickle",
@@ -382,7 +410,7 @@ addLayer("D", {
                 if (hasAchievement("Ach", 65)) c = c.div(5)
                 return c
             },
-            unlocked() {return hasUpgrade("D", 13)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
         },
         46: {
             title: "Dill pickle",
@@ -393,43 +421,43 @@ addLayer("D", {
                 if (hasAchievement("Ach", 65)) c = c.div(5)
                 return c
             },
-            unlocked() {return hasUpgrade("D", 13)},
+            unlocked() {return hasUpgrade("D", 13) || hasAchievement("Ach", 74)},
         },
         51: {
             title: "Im really running out of ideas",
             description: "100x A",
             cost: new Decimal(500),
-            unlocked() {return hasUpgrade("D", 14)},
+            unlocked() {return hasUpgrade("D", 14) || hasAchievement("Ach", 74)},
         },
         52: {
             title: "Haven't done this in a while",
             description: "Improve the & formula",
             cost: new Decimal(500),
-            unlocked() {return hasUpgrade("D", 51)},
+            unlocked() {return hasUpgrade("D", 51) || hasAchievement("Ach", 74)},
         },
         53: {
             title: "Inflation",
             description: "100x B",
             cost: new Decimal(501),
-            unlocked() {return hasUpgrade("D", 52)},
+            unlocked() {return hasUpgrade("D", 52) || hasAchievement("Ach", 74)},
         },
         54: {
             title: "Shrinkflation",
             description: "1.1x C",
             cost: new Decimal(502),
-            unlocked() {return hasUpgrade("D", 53)},
+            unlocked() {return hasUpgrade("D", 53) || hasAchievement("Ach", 74)},
         },
         55: {
             title: "Compensationflation",
             description: "100x C",
             cost: new Decimal(503),
-            unlocked() {return hasUpgrade("D", 54)},
+            unlocked() {return hasUpgrade("D", 54) || hasAchievement("Ach", 74)},
         },
         56: {
             title: "Compensationflationinflammationnationdetermination",
             description: "10x D",
             cost: new Decimal(1000),
-            unlocked() {return hasUpgrade("D", 55)},
+            unlocked() {return hasUpgrade("D", 55) || hasAchievement("Ach", 74)},
         },
 
 
@@ -653,7 +681,7 @@ addLayer("D", {
                 "prestige-button",
                 "blank",
                 ["upgrades",[1]],
-                ["upgrades", () => {if (player.D.total.gte(1)) {return [2,3,4,5]} else {return []}}],
+                ["upgrades", () => {if (player.D.total.gte(1) || hasAchievement("Ach", 74)) {return [2,3,4,5]} else {return []}}],
                 "blank",
             ],
     
