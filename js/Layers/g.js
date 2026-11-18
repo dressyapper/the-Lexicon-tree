@@ -198,7 +198,8 @@ addLayer("G", {
                 else {
                     if (gen.unlocked()) {
                         gen.level = gen.power.div(gen.req).floor()
-                        gen.power = gen.power.add(gen.base.div(20).div(new Decimal(gen.level).max(1).pow(0.9).div(new Decimal(challengeCompletions("G",player.G.genbuyableid[genname])).add(1).pow(3)).pow(gen.amt)).max(1.01).log(new Decimal(gen.level).sub(3000).div(100).add(1).max(1.01)).times(player.devSpeed || 1))
+                        console.log(genname)
+                        gen.power = gen.power.add(gen.base.div(20).div(new Decimal(gen.level).max(1).pow(0.9).div(new Decimal(challengeCompletions("G",player.G.genbuyableid[genname])).add(1).pow(3)).pow(new Decimal(1).div(gen.amt.add(1)))).max(1.01).log(new Decimal(gen.level).sub(3000).div(100).add(1).max(1.01)).times(player.devSpeed || 1))
                     }
                     else {
                         gen.power = new Decimal(0)

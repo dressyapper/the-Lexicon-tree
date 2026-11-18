@@ -616,6 +616,28 @@ addLayer("Ach", {
                 }
             }
         },
+        74: {
+            name: "This feels almost useless",
+            done() {
+                return player.G.generators["&"].level.gte(1)
+            },
+            tooltip() {
+                let desc = "Get the "
+                if (hasAchievement(this.layer, this.id)) {
+                    let effectdesc = "+1000 LP base"
+                    return desc+"<br>Reward: "+effectdesc
+                }
+                else {
+                    return desc
+                }
+            },
+            style() {
+                return {
+                    "border-color": "white",
+                    "border-width": "2px"
+                }
+            }
+        },
         
     },
     pointeff() {

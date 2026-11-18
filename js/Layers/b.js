@@ -47,6 +47,7 @@ addLayer("B", {
             if (inChallenge("C", 14)) cangen = false
             if (player.offTime) cangen = false
             if (hasUpgrade("D", 13) && player.D.mode == "Dusk") cangen = true
+            if (inChallenge("G", 13)) cangen = false
 
             return cangen
         }
