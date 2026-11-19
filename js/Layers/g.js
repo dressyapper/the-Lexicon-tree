@@ -403,6 +403,7 @@ addLayer("G", {
             title: "LP Earn I",
             description: "+1 generation base",
             cost() {return new Decimal(1000)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -414,6 +415,7 @@ addLayer("G", {
             title: "LP Earn II",
             description: "+2 generation base",
             cost() {return new Decimal(2000)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -425,6 +427,7 @@ addLayer("G", {
             title: "LP Earn III",
             description: "+5 generation base",
             cost() {return new Decimal(5000)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -436,6 +439,7 @@ addLayer("G", {
             title: "LP Earn IV",
             description: "+10 generation base",
             cost() {return new Decimal(10000)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -447,6 +451,7 @@ addLayer("G", {
             title: "LP Earn V",
             description: "+15 generation base",
             cost() {return new Decimal(15000)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -458,6 +463,7 @@ addLayer("G", {
             title: "LP Earn VI",
             description: "+36 generation base",
             cost() {return new Decimal(36000)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -470,6 +476,7 @@ addLayer("G", {
             title: "A Earn I",
             description: "+10 generation base",
             cost() {return new Decimal(5e7)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -481,6 +488,7 @@ addLayer("G", {
             title: "A Earn II",
             description: "+20 generation base",
             cost() {return new Decimal(7.5e8)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -492,6 +500,7 @@ addLayer("G", {
             title: "A Earn III",
             description: "+50 generation base",
             cost() {return new Decimal(1.5e9)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -503,6 +512,7 @@ addLayer("G", {
             title: "A Earn IV",
             description: "+100 generation base",
             cost() {return new Decimal(3e9)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -514,6 +524,7 @@ addLayer("G", {
             title: "A Earn V",
             description: "+150 generation base",
             cost() {return new Decimal(5e9)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -525,6 +536,7 @@ addLayer("G", {
             title: "A Earn VI",
             description: "+100000 generation base",
             cost() {return new Decimal(5e10)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -537,6 +549,7 @@ addLayer("G", {
             title: "& Earn I",
             description: "+100 generation base",
             cost() {return new Decimal(1e17)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -548,6 +561,7 @@ addLayer("G", {
             title: "& Earn II",
             description: "+200 generation base",
             cost() {return new Decimal(5e17)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -559,6 +573,7 @@ addLayer("G", {
             title: "& Earn III",
             description: "+500 generation base",
             cost() {return new Decimal(1e18)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -570,6 +585,7 @@ addLayer("G", {
             title: "& Earn IV",
             description: "+1000 generation base",
             cost() {return new Decimal(4e18)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -581,6 +597,7 @@ addLayer("G", {
             title: "& Earn V",
             description: "+1500 generation base",
             cost() {return new Decimal(1e19)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -592,6 +609,7 @@ addLayer("G", {
             title: "& Earn VI",
             description: "+2000 generation base ",
             cost() {return new Decimal(1e20)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -604,6 +622,7 @@ addLayer("G", {
             title: "B Earn I",
             description: "+1000 generation base",
             cost() {return new Decimal(2e24)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -615,6 +634,7 @@ addLayer("G", {
             title: "B Earn II",
             description: "+2000 generation base",
             cost() {return new Decimal(1e25)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -626,6 +646,7 @@ addLayer("G", {
             title: "B Earn III",
             description: "+5000 generation base",
             cost() {return new Decimal(2e25)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -637,6 +658,7 @@ addLayer("G", {
             title: "B Earn IV",
             description: "+10000 generation base",
             cost() {return new Decimal(5e25)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -648,6 +670,7 @@ addLayer("G", {
             title: "B Earn V",
             description: "+15000 generation base",
             cost() {return new Decimal(1e26)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
@@ -659,6 +682,7 @@ addLayer("G", {
             title: "B Earn VI",
             description: "+2000 generation base ",
             cost() {return new Decimal(2e26)},
+            canAfford() {player[this.layer].gps.gte(this.cost())},
             
             currencyLayer: "G",
             currencyInternalName: "gps",
